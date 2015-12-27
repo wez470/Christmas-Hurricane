@@ -33,8 +33,6 @@ public class Countdown : NetworkBehaviour {
 			}
 	        if(countdownStart + timeStarted - (int)Time.timeSinceLevelLoad >= 0) {
 	            timeLeft = countdownStart - (int)Time.timeSinceLevelLoad + timeStarted;
-				Debug.Log(timeLeft);
-				Debug.Log(countdownStart + " " + timeStarted);
 	    		int minutesLeft = timeLeft / 60;
 	    		int secondsLeft = timeLeft % 60;
 	    		currDisplayTime = minutesLeft.ToString ("00") + ":" + secondsLeft.ToString ("00");
