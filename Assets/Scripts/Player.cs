@@ -6,6 +6,8 @@ public class Player : NetworkBehaviour {
 	public float SpeedX = 5f;
 	public float SpeedY = 2f;
 
+	private int hitCount = 0;
+
 	void Start() {
 	}
 
@@ -18,8 +20,9 @@ public class Player : NetworkBehaviour {
 	}
 	
 	void OnCollisionEnter2D(Collision2D col) {
-//		if(col.gameObject.tag == "Finish") {
-//			Application.LoadLevel("level2");
-//		}
+		if(col.gameObject.tag == "Obstacle") {
+			hitCount++;
+			GetComponentInChildren<HitCount>().SetCount(hitCount);
+		}
 	}
 }
