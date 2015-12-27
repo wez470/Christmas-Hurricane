@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : NetworkBehaviour {
 	public float SpeedX = 5f;
@@ -23,6 +24,8 @@ public class Player : NetworkBehaviour {
 		if(col.gameObject.tag == "Obstacle") {
 			hitCount++;
 			GetComponentInChildren<HitCount>().SetCount(hitCount);
+			AudioSource[] audioSources = GetComponents<AudioSource>();
+			audioSources[Random.Range(0, audioSources.Length)].Play();
 		}
 	}
 }
