@@ -48,8 +48,8 @@ public class Countdown : NetworkBehaviour {
 		GetComponent<Text>().text = currDisplayTime;
 	}
 
-    void ReloadLevel() {
-        Application.LoadLevel(Application.loadedLevelName);
+	void ReloadLevel() {
+		NetworkManager.singleton.ServerChangeScene("Online");
     }
 
     public float GetPercentMatchDone() {
