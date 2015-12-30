@@ -28,7 +28,6 @@ public class Player : NetworkBehaviour {
 
 	[Command]
 	void CmdHit() {
-		Debug.Log("Player " + Number + " hit. Hits: " + hits);
 		hits++;
 		GetComponentInChildren<HitCount>().SetCount(hits);
 		AudioSource[] audioSources = GetComponents<AudioSource>();
@@ -44,12 +43,13 @@ public class Player : NetworkBehaviour {
 	public int GetHits() {
 		return hits;
 	}
-	
-	public void Reset() {
-		GetComponent<Rigidbody2D>().velocity  = Vector2.zero;
-		GetComponent<Rigidbody2D>().angularVelocity  = 0;
+
+	[ClientRpc]
+	public void RpcReset() {
 		transform.position = Vector3.zero;
 		transform.rotation = Quaternion.identity;
+		GetComponent<Rigidbody2D>().velocity  = Vector2.zero;
+		GetComponent<Rigidbody2D>().angularVelocity  = 0;
 		hits = 0;
 		GetComponentInChildren<HitCount>().SetCount(hits);
 	}

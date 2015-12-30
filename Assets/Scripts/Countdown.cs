@@ -49,8 +49,10 @@ public class Countdown : NetworkBehaviour {
 	            }
 	        }
 		}
-		GetComponent<Text>().text = currDisplayTime;
-		winner.GetComponent<Text>().text = gameWinner;
+		if(isClient) {
+			GetComponent<Text>().text = currDisplayTime;
+			winner.GetComponent<Text>().text = gameWinner;
+		}
 	}
 
 	private void SetWinner() {
@@ -76,13 +78,13 @@ public class Countdown : NetworkBehaviour {
 		MyNetworkManager networkManager = NetworkManager.singleton as MyNetworkManager;
 		List<GameObject> players = networkManager.GetPlayers();
 		foreach(GameObject player in players) {
-			player.GetComponent<Player>().Reset();
+			player.GetComponent<Player>().RpcReset();
 		}
 		foreach(GameObject obstacle in GameObject.FindGameObjectsWithTag("Obstacle")) {
 			Destroy(obstacle);
 			NetworkServer.Destroy(obstacle);
 		}
-		winner.GetComponent<Text>().text = "";
+		gameWinner = "";
 		restart = true;
     }
 

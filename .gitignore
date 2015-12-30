@@ -1,5 +1,6 @@
 .DS_Store
 *.exe
+ChristmasHurricane.x86_64
 ChristmasHurricane_Data/
 *.csproj
 *.userprefs
