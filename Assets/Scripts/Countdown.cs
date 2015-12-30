@@ -2,11 +2,12 @@
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections; 
+using System.Collections.Generic; 
 using System;
 
 public class Countdown : NetworkBehaviour {
     public int countdownStart = 120;
-    public ScoreController scoreController;
+	public GameObject winner;
 	
     private int timeLeft;
 	private int timeStarted;
@@ -15,8 +16,11 @@ public class Countdown : NetworkBehaviour {
 
 	[SyncVar]
 	private string currDisplayTime = "02:00";
+	[SyncVar]
+	private string gameWinner = "";
 
     void Start() {
+		winner.GetComponent<Text>().text = "";
         restart = true;
         timeLeft = countdownStart;
     }
@@ -26,7 +30,7 @@ public class Countdown : NetworkBehaviour {
 	}
 
     void Update () {
-		if(isServer && NetworkServer.connections.Count > 1) {
+		if(isServer && NetworkManager.singleton.numPlayers > 1) {
 			if(!started) {
 				timeStarted = (int)Time.timeSinceLevelLoad;
 				started = true;
@@ -39,13 +43,32 @@ public class Countdown : NetworkBehaviour {
 	        }
 	        else {
 	            if(restart) {
-	                //scoreController.DisplayWinner();
+					SetWinner();
 	                Invoke("ReloadLevel", 10f);
 	                restart = false;
 	            }
 	        }
 		}
 		GetComponent<Text>().text = currDisplayTime;
+		winner.GetComponent<Text>().text = gameWinner;
+	}
+
+	private void SetWinner() {
+		gameWinner = GetWinningScore();
+	}
+
+	private String GetWinningScore() {
+		MyNetworkManager networkManager = NetworkManager.singleton as MyNetworkManager;
+		List<GameObject> players = networkManager.GetPlayers();
+		int topScore = players[0].GetComponent<Player>().GetHits();
+		int topPlayer = 1;
+		for(int i = 0; i < players.Count; i++) {
+			if(players[i].GetComponent<Player>().GetHits() < topScore) {
+				topScore = players[i].GetComponent<Player>().GetHits();
+				topPlayer = i + 1;
+			}
+		}
+		return "Player " + topPlayer + " Wins!";
 	}
 
 	void ReloadLevel() {

@@ -6,10 +6,18 @@ using System.Collections.Generic;
 public class Player : NetworkBehaviour {
 	public float SpeedX = 5f;
 	public float SpeedY = 2f;
+	public int Number { get; set; }
 
-	private int hitCount = 0;
+	[SyncVar]
+	private int hits = 0;
 
 	void Start() {
+	}
+
+	void Update() {
+		foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
+			GetComponentInChildren<HitCount>().SetCount(player.GetComponent<Player>().GetHits());
+		}
 	}
 
 	void FixedUpdate() {
@@ -21,11 +29,15 @@ public class Player : NetworkBehaviour {
 	}
 	
 	void OnCollisionEnter2D(Collision2D col) {
-		if(col.gameObject.tag == "Obstacle") {
-			hitCount++;
-			GetComponentInChildren<HitCount>().SetCount(hitCount);
+		if(col.gameObject.tag == "Obstacle" && isServer) {
+			hits++;
+			GetComponentInChildren<HitCount>().SetCount(hits);
 			AudioSource[] audioSources = GetComponents<AudioSource>();
 			audioSources[Random.Range(0, audioSources.Length)].Play();
 		}
+	}
+
+	public int GetHits() {
+		return hits;
 	}
 }

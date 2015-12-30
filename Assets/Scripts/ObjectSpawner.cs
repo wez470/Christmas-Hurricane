@@ -14,7 +14,7 @@ public class ObjectSpawner : NetworkBehaviour {
 
 	void Update () {
 		if(isServer) {
-			if(NetworkServer.connections.Count < 2) {
+			if(NetworkManager.singleton.numPlayers < 2) {
 				time = Time.timeSinceLevelLoad;
 			}
 			if(Time.timeSinceLevelLoad - time > timeToNextSpawn) {
