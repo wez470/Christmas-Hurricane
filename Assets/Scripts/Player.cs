@@ -15,9 +15,7 @@ public class Player : NetworkBehaviour {
 	}
 
 	void Update() {
-		foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
-			GetComponentInChildren<HitCount>().SetCount(player.GetComponent<Player>().GetHits());
-		}
+		GetComponentInChildren<HitCount>().SetCount(hits);
 	}
 
 	void FixedUpdate() {
@@ -27,17 +25,32 @@ public class Player : NetworkBehaviour {
 			GetComponent<Rigidbody2D>().velocity = new Vector2(SpeedX * moveHoriz, SpeedY * moveVert);
 		}
 	}
+
+	[Command]
+	void CmdHit() {
+		Debug.Log("Player " + Number + " hit. Hits: " + hits);
+		hits++;
+		GetComponentInChildren<HitCount>().SetCount(hits);
+		AudioSource[] audioSources = GetComponents<AudioSource>();
+		audioSources[Random.Range(0, audioSources.Length)].Play();
+	}
 	
 	void OnCollisionEnter2D(Collision2D col) {
-		if(col.gameObject.tag == "Obstacle" && isServer) {
-			hits++;
-			GetComponentInChildren<HitCount>().SetCount(hits);
-			AudioSource[] audioSources = GetComponents<AudioSource>();
-			audioSources[Random.Range(0, audioSources.Length)].Play();
+		if(col.gameObject.tag == "Obstacle" && isLocalPlayer) {
+			CmdHit();
 		}
 	}
 
 	public int GetHits() {
 		return hits;
+	}
+	
+	public void Reset() {
+		GetComponent<Rigidbody2D>().velocity  = Vector2.zero;
+		GetComponent<Rigidbody2D>().angularVelocity  = 0;
+		transform.position = Vector3.zero;
+		transform.rotation = Quaternion.identity;
+		hits = 0;
+		GetComponentInChildren<HitCount>().SetCount(hits);
 	}
 }

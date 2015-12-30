@@ -22,10 +22,5 @@ public class MyNetworkManager : NetworkManager
 		base.OnServerRemovePlayer(conn, player);
 		players.Remove(player.gameObject);
 	}
-
-	public override void OnServerSceneChanged(string name) {
-		base.OnServerSceneChanged(name);
-		players.Clear();
-	}
 }
 

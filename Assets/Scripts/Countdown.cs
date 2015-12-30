@@ -10,7 +10,7 @@ public class Countdown : NetworkBehaviour {
 	public GameObject winner;
 	
     private int timeLeft;
-	private int timeStarted;
+	private int timeStarted; //This variable will overflow eventually
     private bool restart;
 	private bool started = false;
 
@@ -72,7 +72,18 @@ public class Countdown : NetworkBehaviour {
 	}
 
 	void ReloadLevel() {
-		NetworkManager.singleton.ServerChangeScene("Online");
+		timeStarted = (int)Time.timeSinceLevelLoad;
+		MyNetworkManager networkManager = NetworkManager.singleton as MyNetworkManager;
+		List<GameObject> players = networkManager.GetPlayers();
+		foreach(GameObject player in players) {
+			player.GetComponent<Player>().Reset();
+		}
+		foreach(GameObject obstacle in GameObject.FindGameObjectsWithTag("Obstacle")) {
+			Destroy(obstacle);
+			NetworkServer.Destroy(obstacle);
+		}
+		winner.GetComponent<Text>().text = "";
+		restart = true;
     }
 
     public float GetPercentMatchDone() {
