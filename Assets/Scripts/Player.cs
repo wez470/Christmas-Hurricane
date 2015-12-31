@@ -30,8 +30,13 @@ public class Player : NetworkBehaviour {
 	void CmdHit() {
 		hits++;
 		GetComponentInChildren<HitCount>().SetCount(hits);
+		RpcPlayHitSound();
+	}
+
+	[ClientRpc]
+	void RpcPlayHitSound() {
 		AudioSource[] audioSources = GetComponents<AudioSource>();
-		audioSources[Random.Range(0, audioSources.Length)].Play();
+		audioSources[Random.Range(0, audioSources.Length)].Play();	
 	}
 	
 	void OnCollisionEnter2D(Collision2D col) {
